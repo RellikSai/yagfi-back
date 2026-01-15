@@ -1,0 +1,25 @@
+package com.github.regyl.gfi.controller.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class IssueResponseDto {
+
+    private Long issueId;
+    private String issueTitle;
+    private String issueUrl;
+    private OffsetDateTime issueUpdated;
+    private OffsetDateTime issueCreated;
+
+    private String repositoryTitle;
+    private String repositoryUrl;
+    private Integer repositoryStars;
+    private String repositoryDescription;
+    private String repositoryLanguage;
+}

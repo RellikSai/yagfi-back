@@ -4,22 +4,22 @@ import com.github.regyl.gfi.controller.dto.github.GithubIssueDto;
 import com.github.regyl.gfi.controller.dto.github.GithubRepositoryDto;
 import com.github.regyl.gfi.controller.dto.github.GithubSearchDto;
 import com.github.regyl.gfi.controller.dto.github.IssueData;
-import com.github.regyl.gfi.controller.dto.request.IssueRequestDto;
+import com.github.regyl.gfi.controller.dto.request.DataRequestDto;
+import com.github.regyl.gfi.controller.dto.response.DataResponseDto;
+import com.github.regyl.gfi.controller.dto.response.IssueResponseDto;
 import com.github.regyl.gfi.entity.IssueEntity;
 import com.github.regyl.gfi.entity.RepositoryEntity;
 import com.github.regyl.gfi.repository.BatchUpsertRepository;
-import com.github.regyl.gfi.repository.IssueJpaRepository;
 import com.github.regyl.gfi.repository.RepoJpaRepository;
+import com.github.regyl.gfi.repository.mapper.DataMapper;
 import com.github.regyl.gfi.service.DataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,9 +35,9 @@ public class DataServiceImpl implements DataService {
     private final BatchUpsertRepository<IssueEntity> issueRepository;
     private final BatchUpsertRepository<RepositoryEntity> repoRepository;
     private final RepoJpaRepository jpaRepoRepository;
-    private final IssueJpaRepository issueJpaRepository;
     private final BiFunction<Map<String, RepositoryEntity>, GithubIssueDto, IssueEntity> issueMapper;
     private final Function<GithubRepositoryDto, RepositoryEntity> repoMapper;
+    private final DataMapper dataMapper;
 
     @Async
     @Override
@@ -59,13 +59,13 @@ public class DataServiceImpl implements DataService {
                 .map(issue -> issueMapper.apply(repoCollection, issue))
                 .toList();
 
-        log.info("Issues found: {}", issues.size());
+        log.info("Issues loaded: {}", issues.size());
         issueRepository.saveAll(issues);
     }
 
     @Override
-    public Page<IssueEntity> findAllIssues(IssueRequestDto requestDto) {
-        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize());
-        return issueJpaRepository.findAll(pageable);
+    public DataResponseDto findAllIssues(DataRequestDto requestDto) {
+        Collection<IssueResponseDto> issues = dataMapper.findAllIssues(requestDto);
+        return new DataResponseDto(issues);
     }
 }

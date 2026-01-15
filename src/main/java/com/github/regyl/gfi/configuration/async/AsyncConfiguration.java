@@ -2,6 +2,7 @@ package com.github.regyl.gfi.configuration.async;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -33,5 +34,18 @@ public class AsyncConfiguration implements AsyncConfigurer {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new DefaultAsyncUncaughtExceptionHandlerImpl();
+    }
+
+    @Bean("issueLoadAsyncExecutor")
+    public ThreadPoolTaskExecutor issueLoadAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(configProps.getCorePoolSize());
+        executor.setMaxPoolSize(configProps.getMaxPoolSize());
+        executor.setPrestartAllCoreThreads(false);
+        executor.setThreadGroupName("load-group-async-");
+        executor.setThreadNamePrefix("load-async-");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
     }
 }

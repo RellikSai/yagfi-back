@@ -1,18 +1,23 @@
 package com.github.regyl.gfi.controller.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueRequestDto {
+public class DataRequestDto {
 
-    private Integer page = 0;
-    private Integer size = 10;
+    @NotNull
+    private Integer limit;
+    @NotNull
+    private Integer offset;
 
     private FilterRequestDto filter;
 
-    private OrderDto order;
+    private Collection<OrderDto> orders;
 }

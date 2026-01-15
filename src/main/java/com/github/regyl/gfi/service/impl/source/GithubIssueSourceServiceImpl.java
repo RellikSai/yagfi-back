@@ -9,6 +9,7 @@ import com.github.regyl.gfi.service.source.IssueSourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -70,6 +71,7 @@ public class GithubIssueSourceServiceImpl implements IssueSourceService {
     private final GraphQlClient githubClient;
     private final LabelService labelService;
     private final DataService dataService;
+    @Qualifier("issueLoadAsyncExecutor")
     private final ThreadPoolTaskExecutor taskExecutor;
 
     @Override
