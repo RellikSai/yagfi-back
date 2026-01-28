@@ -12,7 +12,7 @@ YAGFI - yet another good first issue
   <a href="https://www.bestpractices.dev/en/projects/11787"><img src="https://www.bestpractices.dev/projects/10534/badge" alt="OpenSSF Best Practices"></a>
 </div>
 <div align="center">
-  <a href="https://discord.gg/evCSycGd"><img src="https://img.shields.io/discord/1465432673164984567" alt="Discord"></a>
+  <a href="https://discord.gg/cggqh3Qr8d"><img src="https://img.shields.io/discord/1465432673164984567" alt="Discord"></a>
 </div>
 
 Website: [yagfi.com](http://yagfi.com)
