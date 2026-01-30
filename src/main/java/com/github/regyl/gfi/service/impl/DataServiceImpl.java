@@ -9,6 +9,7 @@ import com.github.regyl.gfi.controller.dto.response.DataResponseDto;
 import com.github.regyl.gfi.controller.dto.response.IssueResponseDto;
 import com.github.regyl.gfi.entity.IssueEntity;
 import com.github.regyl.gfi.entity.RepositoryEntity;
+import com.github.regyl.gfi.exception.IssueNotFoundException;
 import com.github.regyl.gfi.model.IssueTables;
 import com.github.regyl.gfi.repository.DataRepository;
 import com.github.regyl.gfi.repository.IssueRepository;
@@ -77,5 +78,15 @@ public class DataServiceImpl implements DataService {
     @Cacheable(cacheNames = "languages")
     public Collection<String> findAllLanguages() {
         return dataRepository.findAllLanguages();
+    }
+
+    @Override
+    public String findRandomIssueUrl(DataRequestDto filters) {
+        String link = issueRepository.findRandomIssueLink(filters);
+
+        if (link == null) {
+            throw new IssueNotFoundException("Random issue link not found!");
+        }
+        return link;
     }
 }

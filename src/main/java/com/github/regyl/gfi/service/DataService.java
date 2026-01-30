@@ -14,4 +14,5 @@ public interface DataService {
     DataResponseDto findAllIssues(DataRequestDto requestDto);
 
     Collection<String> findAllLanguages();
+    String findRandomIssueUrl(DataRequestDto filters);
 }
