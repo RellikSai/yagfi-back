@@ -37,6 +37,8 @@ public class LogServiceImpl implements LogService {
                     .build();
 
             logRepository.save(logEntity);
+        } catch (IllegalStateException e) {
+            log.warn("Illegal state of request during saving: {}", e.getMessage());
         } catch (Exception e) {
             log.error("Failed to log HTTP request", e);
         }
