@@ -24,12 +24,7 @@
     <insert id="insert" parameterType="com.github.regyl.gfi.entity.EventEntity" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO gfi.e_event (source, last_update_dttm, created)
         VALUES (#{source}, #{lastUpdateDttm}, #{created})
+        ON CONFLICT (source) DO UPDATE SET last_update_dttm = #{lastUpdateDttm}
     </insert>
-
-    <update id="update">
-        UPDATE gfi.e_event
-        SET last_update_dttm = #{lastUpdateDttm}
-        WHERE source = #{source}
-    </update>
 
 </mapper>

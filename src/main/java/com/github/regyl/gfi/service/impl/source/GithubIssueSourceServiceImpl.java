@@ -3,6 +3,7 @@ package com.github.regyl.gfi.service.impl.source;
 import com.github.regyl.gfi.controller.dto.github.issue.IssueDataDto;
 import com.github.regyl.gfi.controller.dto.request.IssueRequestDto;
 import com.github.regyl.gfi.listener.event.IssueSyncCompletedEvent;
+import com.github.regyl.gfi.model.IssueSources;
 import com.github.regyl.gfi.model.IssueTables;
 import com.github.regyl.gfi.model.LabelModel;
 import com.github.regyl.gfi.service.other.DataService;
@@ -23,7 +24,6 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -40,6 +40,12 @@ public class GithubIssueSourceServiceImpl implements IssueSourceService {
     private final ThreadPoolTaskExecutor taskExecutor;
 
     @Override
+    public void raiseUploadEvent() {
+        eventPublisher.publishEvent(new IssueSyncCompletedEvent(IssueSources.GITHUB, OffsetDateTime.now()));
+        log.info("ActionLog.upload All github issues synced successfully");
+    }
+
+    @Override
     public void upload(IssueTables table) {
         Collection<LabelModel> labels = labelService.findAll();
 
@@ -47,9 +53,6 @@ public class GithubIssueSourceServiceImpl implements IssueSourceService {
             log.warn("ActionLog.upload No labels found for GitHub sync. Skipping...");
             return;
         }
-
-        AtomicInteger completedCount = new AtomicInteger(0);
-        int totalLabels = labels.size();
 
         for (LabelModel label : labels) {
 
@@ -72,11 +75,6 @@ public class GithubIssueSourceServiceImpl implements IssueSourceService {
 
                 } catch (Exception e) {
                     log.error("ActionLog.upload.error uploading issues for label {}", label, e);
-                } finally {
-                    if (completedCount.incrementAndGet() == totalLabels) {
-                        eventPublisher.publishEvent(new IssueSyncCompletedEvent(label.getTitle(), OffsetDateTime.now()));
-                        log.info("ActionLog.upload All github issues synced successfully");
-                    }
                 }
             });
         }

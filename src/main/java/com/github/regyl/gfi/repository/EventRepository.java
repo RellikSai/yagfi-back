@@ -15,6 +15,4 @@ public interface EventRepository {
     List<EventEntity> findAll();
 
     void insert(EventEntity event);
-
-    void update(EventEntity event);
 }

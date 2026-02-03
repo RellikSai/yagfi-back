@@ -1,14 +1,15 @@
 package com.github.regyl.gfi.listener.event;
 
-import lombok.AllArgsConstructor;
+import com.github.regyl.gfi.model.IssueSources;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
 
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class IssueSyncCompletedEvent {
 
-    private final String source;
+    private final IssueSources source;
     private final OffsetDateTime syncTime;
 }

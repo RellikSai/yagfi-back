@@ -1,7 +1,7 @@
 package com.github.regyl.gfi.listener;
 
 import com.github.regyl.gfi.listener.event.IssueSyncCompletedEvent;
-import com.github.regyl.gfi.service.event.EventService;
+import com.github.regyl.gfi.service.other.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

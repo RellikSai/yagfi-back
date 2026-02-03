@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,6 +34,7 @@ public class IssueLoaderServiceImpl implements ScheduledService {
     @Override
     @Scheduled(fixedRateString = "${spring.properties.auto-upload.period-mills}", initialDelay = 1000)
     public void schedule() {
+        log.info("Start issue load task");
         IssueTables table = determineTable();
         sourceServices.forEach(service -> service.upload(table));
 
@@ -43,7 +45,9 @@ public class IssueLoaderServiceImpl implements ScheduledService {
             }
         }
 
-        log.info("Issue pulling finished (but maybe not all uploaded to DB yet)");
+        sourceServices.forEach(IssueSourceService::raiseUploadEvent);
+
+        log.info("Issue load finished (but maybe not all uploaded to DB yet)");
 
         replaceView(table);
     }
@@ -74,7 +78,12 @@ public class IssueLoaderServiceImpl implements ScheduledService {
         jdbcTemplate.execute(String.format("alter sequence gfi.%s_id_seq restart", expiredTable.getRepoTableName()));
         log.info("Sequences restarted");
 
-        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
+        cacheManager.getCacheNames().forEach(cacheName -> {
+            Cache cache = cacheManager.getCache(cacheName);
+            if (cache != null) {
+                cache.clear();
+            }
+        });
         log.info("Caches evicted");
     }
 }
