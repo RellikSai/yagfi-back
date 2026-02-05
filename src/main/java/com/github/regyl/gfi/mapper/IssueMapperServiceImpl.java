@@ -20,13 +20,10 @@ public class IssueMapperServiceImpl
         implements BiFunction<Map<String, RepositoryEntity>, GithubIssueDto, IssueEntity> {
 
     private static final LanguageDetector LANGUAGE_DETECTOR =
-            LanguageDetectorBuilder.fromAllLanguages().build();
+            LanguageDetectorBuilder.fromAllLanguages().withLowAccuracyMode().build();
 
     @Override
-    public IssueEntity apply(
-            Map<String, RepositoryEntity> repos,
-            GithubIssueDto dto
-    ) {
+    public IssueEntity apply(Map<String, RepositoryEntity> repos,GithubIssueDto dto) {
         List<String> labels = dto.getLabels().getNodes().stream()
                 .map(GithubLabelDto::getName)
                 .toList();
